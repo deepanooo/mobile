@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/project_form.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -11,6 +12,7 @@ class MyHomePage extends StatelessWidget {
     ItemHomepage('Projects', Icons.folder, Colors.red),
     ItemHomepage('Achievements', Icons.emoji_events, Colors.purple),
     ItemHomepage('Contact', Icons.contact_mail, Colors.teal),
+    ItemHomepage('Tambah Proyek', Icons.add_circle, Colors.indigo),
   ];
 
   @override
@@ -125,6 +127,16 @@ class ItemCard extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(SnackBar(content: Text('You pressed ${item.name}')));
+
+          // Navigate ke halaman yang sesuai
+          if (item.name == "Tambah Proyek") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProjectFormPage(),
+              ),
+            );
+          }
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
