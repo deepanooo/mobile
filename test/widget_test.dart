@@ -1,30 +1,86 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:myportofolio_mobile/screens/education_form.dart';
+import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('education action opens the form from the home page',
+      (tester) async {
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.ensureVisible(find.text('Tambah Edukasi'));
+    await tester.tap(find.text('Tambah Edukasi'));
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.byType(EducationFormPage), findsOneWidget);
+    expect(find.text('Formulir Edukasi'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('required fields and education year order are validated',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: EducationFormPage()),
+    );
+
+    await tester.tap(find.text('Simpan'));
+    await tester.pumpAndSettle();
+    expect(find.text('Kolom ini wajib diisi.'), findsNWidgets(6));
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Universitas');
+    await tester.enterText(find.byType(TextFormField).at(1), 'S1');
+    await tester.enterText(find.byType(TextFormField).at(2), 'Informatika');
+    await tester.enterText(find.byType(TextFormField).at(3), '2024');
+    await tester.enterText(find.byType(TextFormField).at(4), '2020');
+    await tester.enterText(find.byType(TextFormField).at(5), 'Deskripsi');
+    await tester.dragUntilVisible(
+      find.text('Simpan'),
+      find.byType(ListView),
+      const Offset(0, -300),
+    );
+    await tester.tap(find.text('Simpan'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Tahun selesai tidak boleh sebelum tahun mulai.'),
+      findsOneWidget,
+    );
+    expect(find.text('Data edukasi berhasil disimpan'), findsNothing);
+  });
+
+  testWidgets('valid education data appears in the summary dialog',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: EducationFormPage()),
+    );
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Universitas');
+    await tester.enterText(find.byType(TextFormField).at(1), 'S1');
+    await tester.enterText(find.byType(TextFormField).at(2), 'Informatika');
+    await tester.enterText(find.byType(TextFormField).at(3), '2020');
+    await tester.enterText(find.byType(TextFormField).at(4), '2024');
+    await tester.enterText(find.byType(TextFormField).at(5), 'Deskripsi');
+    await tester.tap(find.text('Simpan'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Data edukasi berhasil disimpan'), findsOneWidget);
+    expect(find.text('Institusi: Universitas'), findsOneWidget);
+    expect(find.text('Periode: 2020–2024'), findsOneWidget);
+
+    await tester.tap(find.text('Tutup'));
+    await tester.pumpAndSettle();
+    expect(find.byType(EducationFormPage), findsOneWidget);
+  });
+
+  testWidgets('education form can also be opened from the drawer',
+      (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: MyHomePage()));
+
+    await tester.tap(find.byTooltip('Open navigation menu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Add Education'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(EducationFormPage), findsOneWidget);
   });
 }
