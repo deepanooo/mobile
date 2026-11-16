@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
@@ -19,7 +20,9 @@ class MyHomePage extends StatelessWidget {
         title: const Text('My Portfolio'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      drawer: const LeftDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
