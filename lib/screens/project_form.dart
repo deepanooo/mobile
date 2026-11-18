@@ -193,6 +193,11 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                     _formKey.currentState!.reset();
+                                    _projectName = '';
+                                    _description = '';
+                                    _category = 'Web Development';
+                                    _technologies = '';
+                                    _projectLink = '';
                                   },
                                 ),
                               ],
